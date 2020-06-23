@@ -16,6 +16,17 @@ class InfoPipeline:
         self.store_db(item)
         return item
 
+    def store_images(self, house_id_val, images):
+        self.cursor.execute('SELECT id FROM base_housemodel WHERE house_id=?', (house_id_val,))
+        house_id = self.cursor.fetchone()
+        if house_id:
+            for image in images:
+                self.cursor.execute(
+                    f"INSERT INTO base_image VALUES (NULL ,?,?)", (house_id[0], image))
+            self.conn.commit()
+        else:
+            print('Cant find house with this house_id')
+
     def store_db(self, item):
         # print(item['floor_count'])
         house_id_val = int(item['house_id'].replace(' ', ''))
@@ -43,6 +54,7 @@ class InfoPipeline:
                  floor_count_val, house_type_val, total_area_val, living_area_val, kitchen_area_val, deadline_val,
                  phone_val, num_of_rooms_val))
             self.conn.commit()
+            self.store_images(house_id_val, item['images'])
             self.cursor.execute("SELECT id FROM base_houseinfo where house_id=?", (house_id_val,))
 
             house_info_id_val = self.cursor.fetchone()[0]

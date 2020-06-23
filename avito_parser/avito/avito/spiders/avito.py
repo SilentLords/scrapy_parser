@@ -33,7 +33,7 @@ class AvitoSpider(scrapy.Spider):
                 self.link_pool.append(response.urljoin(item.css('a.snippet-link::attr(href)').get()))
             yield {
                 'house_id': item.css('a.snippet-link::attr(href)').get().split("._")[1],
-                'img': response.urljoin(item.css('img.large-picture-img::attr(src)').get()),
+                'img': item.css('img.large-picture-img::attr(src)').get(),
                 'title': item.css('a.snippet-link::text').get(),
                 'link': response.urljoin(item.css('a.snippet-link::attr(href)').get()),
                 'price': int(correct_price(item.css('span.snippet-price::text').get())),
@@ -62,7 +62,7 @@ class AvitoSpider(scrapy.Spider):
         cursor = conn.cursor()
         cursor.execute('SELECT house_id FROM base_housemodel WHERE house_id=?', (house_id_val,))
         a = cursor.fetchone()
-        print(a)
+        # print(a)
         if a:
             return False
         else:

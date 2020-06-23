@@ -6,6 +6,10 @@ from inline_requests import inline_requests
 import scrapy
 
 
+def save_images(images):
+    pass
+
+
 class InfoSpider(scrapy.Spider):
     all_json_data = []
     links = []
@@ -15,9 +19,8 @@ class InfoSpider(scrapy.Spider):
 
     def start_requests(self):
         with open('links.csv') as f:
-            url = f.readline()
             self.links = f.read().splitlines()
-            yield scrapy.Request(url=url, callback=self.parse)
+            yield scrapy.Request(url=self.links[0], callback=self.parse)
 
     name = 'info_v1'
     allowed_domains = ['avito.ru']
@@ -30,17 +33,19 @@ class InfoSpider(scrapy.Spider):
             'accept': '*/*',
             'referer': response.url}
         type_of_participation, official_builder, name_of_build, decoration, floor, floor_count, house_type, num_of_rooms, total_area, living_area, kitchen_area, deadline = ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',
-
+        images = []
         # print(response.url)
         req = yield scrapy.Request(
             url=f'https://m.avito.ru/api/1/items/{response.url.split("._")[1]}/phone/?key={self.key}', headers=Headers)
-        # print(req.body.decode("utf-8"))
+        images_req = response.css('.gallery-img-frame')
+        for image in images_req:
+            images.append('https://' + image.css('::attr(data-url)').get().replace('//', ''))
         if re.findall('bad-request', req.body.decode("utf-8")):
             print('bad_req', req.body.decode("utf-8"))
             num = 000000000
         else:
             num = req.body.decode("utf-8").split('2B')[1].replace('"}}}', '')
-        # print(num)
+        # print(images)
         for info_colum in response.css('li.item-params-list-item'):
             re_Info = info_colum
             re_Info = re.sub(r' |</li>', '', re_Info.extract().split(' </span>')[1])
@@ -86,7 +91,8 @@ class InfoSpider(scrapy.Spider):
             "living_area": living_area,
             "kitchen_area": kitchen_area,
             "deadline": deadline,
-            'phone': num}
+            'phone': num,
+            'images': images}
 
         self.id_house += 1
         print(f'Parsed links: {self.id_house} of{self.links.__len__()} ')

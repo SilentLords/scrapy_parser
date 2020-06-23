@@ -32,13 +32,10 @@ class AvitoPipeline:
         self.cursor.execute('SELECT house_id FROM base_housemodel WHERE house_id=?', (house_id_val,))
         a = self.cursor.fetchone()
         if a:
-            print(a, house_id_val)
-            print('this row is already exist')
+            print('This row is already exist')
         else:
-            # print('im_there', link_val)
             self.cursor.execute(
-                f"INSERT INTO base_housemodel VALUES (NULL ,?,?,?,?,?,?,?,?,NULL)",
-                (house_id_val, title_val, link_val, price_val, address_val, data_val, time_created_val, host_val))
+                f"INSERT INTO base_housemodel VALUES (NULL ,?,?,?,?,?,?,?,?,NULL,?)",
+                (house_id_val, title_val, link_val, price_val, address_val, data_val, time_created_val, host_val, img_val))
             self.conn.commit()
-        # self.conn.close()
 
