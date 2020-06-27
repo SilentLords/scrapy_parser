@@ -12,7 +12,7 @@ class N1Pipeline:
         return item
 
     def __init__(self):
-        self.conn = sqlite3.connect('/Users/nikitatonkoskurov/PycharmProjects/domofound2/db.sqlite3')
+        self.conn = sqlite3.connect('/var/www/dom/src/db.sqlite3')
         self.cursor = self.conn.cursor()
 
     def process_item(self, item, spider):
@@ -35,7 +35,7 @@ class N1Pipeline:
             print('This row is already exist')
         else:
             self.cursor.execute(
-                f"INSERT INTO base_housemodel VALUES (NULL ,?,?,?,?,?,?,?,?,NULL,?)",
-                (house_id_val, title_val, link_val, price_val, address_val, data_val, time_created_val, host_val,
-                 img_val))
+                f"INSERT INTO base_housemodel VALUES (NULL ,?,?,?,?,?,?,?,NULL,?,?)",
+                (house_id_val, title_val, link_val, address_val, data_val, time_created_val, host_val,
+                 img_val,price_val))
             self.conn.commit()

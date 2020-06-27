@@ -21,7 +21,7 @@ class N1SpiderSpider(scrapy.Spider):
                 'house_id': card.css('a.link::attr(href)').get().split('w/')[1].replace('/', ''),
                 "link": response.urljoin(card.css('a.link::attr(href)').get()),
                 "title": card.css('a.link > span::text').get(),
-                "price": card.css('.living-list-card-price__item::text').get(),
+                "price": card.css('.living-list-card-price__item::text').get().replace(' ', ''),
                 'address': card.css('a.link > span::text').get().split(',')[1] + ' ' +
                            card.css('a.link > span::text').get().split(',')[2] + ' ' + card.css(
                     '.living-list-card__inner-block::text').get() + ' ' + card.css(
@@ -35,7 +35,7 @@ class N1SpiderSpider(scrapy.Spider):
         self.save()
 
     def check_db(self, house_id_val):
-        conn = sqlite3.connect('/Users/nikitatonkoskurov/PycharmProjects/domofound2/db.sqlite3')
+        conn = sqlite3.connect('/var/www/dom/src/db.sqlite3')
         cursor = conn.cursor()
         cursor.execute('SELECT house_id FROM base_housemodel WHERE house_id=?', (house_id_val,))
         a = cursor.fetchone()

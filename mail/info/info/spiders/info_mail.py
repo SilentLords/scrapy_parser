@@ -36,18 +36,22 @@ class InfoSpider(scrapy.Spider):
         images_req = response.css('.grid__item::attr("data-original")').getall()
         for image in images_req:
             images.append(image)
-            pass
         print('------------------------\n')
-        print(response.css('.p-gallery-wrap > .js-module::attr(onclick)').get().split('phone_full":')[1].replace('}}}}}}', '').replace('"',''))
-        num = response.css('.p-gallery-wrap > .js-module::attr(onclick)').get().split('phone_full":')[1].replace('}}}}}}', '').replace('"','')
+        # print(response.css('.p-gallery-wrap > .js-module::attr(onclick)').get().split('phone_full":')[1].replace('}}}}}}', '').replace('"',''))
+        if response.css('.p-gallery-wrap > .js-module::attr(onclick)').get():
+            num = response.css('.p-gallery-wrap > .js-module::attr(onclick)').get().split('phone_full":')[1].replace(
+                '}}}}}}', '').replace('"', '')
+        else:
+            num = 00000000000
         par_list = []
         for item in response.css('.p-params__item'):
             # if item.css('span.color_gray::text').getall() == 'кухня':
             #     print('hui')
             #     par_list.append(
             #         [item.css('span.p-params__name::text').get(), item.css('span.p-params__value > span::text').getall()])
-            par_list.append([item.css('span.p-params__name::text').get(),item.css('span.p-params__value > span::text').get() ])
-        print(par_list)
+            par_list.append(
+                [item.css('span.p-params__name::text').get(), item.css('span.p-params__value > span::text').get()])
+        # print(par_list)
 
         for item in par_list:
             if item[0] == 'Комнат':
@@ -55,10 +59,11 @@ class InfoSpider(scrapy.Spider):
             if item[0] == 'Этаж / Всего':
                 floor = item[1].split('/')[0].replace(' ', '')
                 floor_count = item[1].split('/')[1].replace(' ', '')
-            if item[0] =='Площадь, м²':
+            if item[0] == 'Площадь, м²':
                 total_area = item[1]
             if item[0] == 'Тип дома':
                 house_type = item[1]
+        data = response.css(".toggle__item > div::text").get()
 
         # num = response.css('a.offer-card-contacts-phones__phone::attr(href)').get().replace('tel:+', '')
         # params = response.css('li.card-living-content-params-list__item')
@@ -82,7 +87,7 @@ class InfoSpider(scrapy.Spider):
         #         kitchen_area = item[1]
         # num_of_rooms = response.css('.deal-title::text').get().split(' ')[1]
         yield {
-            'house_id': response.url.split('-')[-1].replace('/', ''),
+            'house_id': response.url.split('-')[-1].replace('/', '').replace('?osale2', '').replace('?osale1', ''),
             'type_of_participation': type_of_participation,
             'official_builder': official_builder,
             'name_of_build': name_of_build,
@@ -96,7 +101,8 @@ class InfoSpider(scrapy.Spider):
             "kitchen_area": kitchen_area,
             "deadline": deadline,
             'phone': num,
-            'images': images}
+            'images': images,
+            'data': data}
 
         self.id_house += 1
         # print(f'Parsed links: {self.id_house} of{self.links.__len__()} ')

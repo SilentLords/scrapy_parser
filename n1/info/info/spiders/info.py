@@ -62,6 +62,7 @@ class InfoSpider(scrapy.Spider):
             if item[0] == 'Кухня':
                 kitchen_area = item[1]
         num_of_rooms = response.css('.deal-title::text').get().split(' ')[1]
+        data = response.css('.foldable-description  > div::text').get()
         yield {
             'house_id': response.url.split('w/')[1].replace('/', ''),
             'type_of_participation': type_of_participation,
@@ -77,7 +78,9 @@ class InfoSpider(scrapy.Spider):
             "kitchen_area": kitchen_area,
             "deadline": deadline,
             'phone': num,
-            'images': images}
+            'images': images,
+            "data": data
+        }
 
         self.id_house += 1
         print(f'Parsed links: {self.id_house} of{self.links.__len__()} ')

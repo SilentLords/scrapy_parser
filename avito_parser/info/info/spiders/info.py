@@ -36,10 +36,20 @@ class InfoSpider(scrapy.Spider):
         images = []
         # print(response.url)
         req = yield scrapy.Request(
-            url=f'https://m.avito.ru/api/1/items/{response.url.split("._")[1]}/phone/?key={self.key}', headers=Headers)
+            url=f'http://m.avito.ru/api/1/items/{response.url.split("._")[1]}/phone/?key={self.key}', headers=Headers)
         images_req = response.css('.gallery-img-frame')
         for image in images_req:
             images.append('https://' + image.css('::attr(data-url)').get().replace('//', ''))
+        if response.css('.item-description-text > p'):
+            print('Base text')
+            data_set = response.css('.item-description-text > p::text').getall()
+        if response.css('.item-description-html > p'):
+            print('html text')
+            data_set = response.css('.item-description-html > p::text').getall()
+        elif response.css('.item-description-html::text'):
+            data_set = response.css('.item-description-html::text').getall()
+        # print(data_set)
+        data = ' '.join(data_set)
         if re.findall('bad-request', req.body.decode("utf-8")):
             print('bad_req', req.body.decode("utf-8"))
             num = 000000000
@@ -92,7 +102,8 @@ class InfoSpider(scrapy.Spider):
             "kitchen_area": kitchen_area,
             "deadline": deadline,
             'phone': num,
-            'images': images}
+            'images': images,
+            'data': data}
 
         self.id_house += 1
         print(f'Parsed links: {self.id_house} of{self.links.__len__()} ')

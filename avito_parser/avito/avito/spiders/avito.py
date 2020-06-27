@@ -58,7 +58,7 @@ class AvitoSpider(scrapy.Spider):
                 callback=self.parse)
 
     def check_db(self, house_id_val):
-        conn = sqlite3.connect('/Users/nikitatonkoskurov/PycharmProjects/domofound2/db.sqlite3')
+        conn = sqlite3.connect('/var/www/dom/src/db.sqlite3')
         cursor = conn.cursor()
         cursor.execute('SELECT house_id FROM base_housemodel WHERE house_id=?', (house_id_val,))
         a = cursor.fetchone()
