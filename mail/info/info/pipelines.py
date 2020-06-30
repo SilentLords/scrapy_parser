@@ -51,7 +51,7 @@ class InfoPipeline:
             print('Студия или своб. планировка')
         else:
             if int(num_of_rooms_val) >= 5:
-                num_of_rooms_val = '5+к'
+                num_of_rooms_val = f'5к+ {num_of_rooms_val}'
             else:
                 num_of_rooms_val = f'{int(num_of_rooms_val)}к'
         if total_area_val == '':

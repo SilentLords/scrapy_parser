@@ -87,8 +87,12 @@ class InfoSpider(scrapy.Spider):
                 kitchen_area = re_Info
             if re.search(r'Срок сдачи', info_colum):
                 deadline = re_Info
+        if response.url.split("._").__len__() > 2:
+            h_id = response.url.split("._")[2]
+        else:
+            h_id = response.url.split("._")[1]
         yield {
-            'house_id': response.url.split("._")[1],
+            'house_id': h_id,
             'type_of_participation': type_of_participation,
             'official_builder': official_builder,
             'name_of_build': name_of_build,

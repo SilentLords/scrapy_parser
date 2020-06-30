@@ -17,8 +17,12 @@ class N1SpiderSpider(scrapy.Spider):
         for card in cards:
             if self.check_db(card.css('a.link::attr(href)').get().split('w/')[1].replace('/', '')):
                 self.link_pool.append(response.urljoin(card.css('a.link::attr(href)').get()))
+            if card.css('a.link::attr(href)').get().split('w/')[1].replace('/', '').__len__()>10:
+                h = int(card.css('a.link::attr(href)').get().split('w/')[1].replace('/', '')) // 10000000
+            else:
+                h = int(card.css('a.link::attr(href)').get().split('w/')[1].replace('/', ''))
             yield ({
-                'house_id': card.css('a.link::attr(href)').get().split('w/')[1].replace('/', ''),
+                'house_id': h,
                 "link": response.urljoin(card.css('a.link::attr(href)').get()),
                 "title": card.css('a.link > span::text').get(),
                 "price": card.css('.living-list-card-price__item::text').get().replace(' ', ''),

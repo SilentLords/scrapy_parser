@@ -63,8 +63,12 @@ class InfoSpider(scrapy.Spider):
                 kitchen_area = item[1]
         num_of_rooms = response.css('.deal-title::text').get().split(' ')[1]
         data = response.css('.foldable-description  > div::text').get()
+        if response.url.split('w/')[1].replace('/', '').__len__() > 10:
+            h = int(response.url.split('w/')[1].replace('/', '')) // 10000000
+        else:
+            h = int(response.url.split('w/')[1].replace('/', ''))
         yield {
-            'house_id': response.url.split('w/')[1].replace('/', ''),
+            'house_id': h,
             'type_of_participation': type_of_participation,
             'official_builder': official_builder,
             'name_of_build': name_of_build,

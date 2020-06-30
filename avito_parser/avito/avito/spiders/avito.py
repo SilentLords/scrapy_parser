@@ -31,8 +31,12 @@ class AvitoSpider(scrapy.Spider):
                 geo = ''
             if self.check_db(item.css('a.snippet-link::attr(href)').get().split("._")[1]):
                 self.link_pool.append(response.urljoin(item.css('a.snippet-link::attr(href)').get()))
+            if item.css('a.snippet-link::attr(href)').get().split("._").__len__()>2:
+                h_id = item.css('a.snippet-link::attr(href)').get().split("._")[2]
+            else:
+                h_id = item.css('a.snippet-link::attr(href)').get().split("._")[1]
             yield {
-                'house_id': item.css('a.snippet-link::attr(href)').get().split("._")[1],
+                'house_id': h_id,
                 'img': item.css('img.large-picture-img::attr(src)').get(),
                 'title': item.css('a.snippet-link::text').get(),
                 'link': response.urljoin(item.css('a.snippet-link::attr(href)').get()),

@@ -46,7 +46,7 @@ class InfoPipeline:
             print('Студия или своб. планировка')
         else:
             if int(num_of_rooms_val.split('к')[0]) >= 5:
-                num_of_rooms_val = '5+к'
+                num_of_rooms_val = f"5к+ {int(num_of_rooms_val.split('к')[0])}"
         if total_area_val == '':
             total_area_val = 0
         else:
